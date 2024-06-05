@@ -45,6 +45,13 @@ form {
   display: flex;
 }
 
+.image {
+  height: 20rem;
+}
+
+.image img {
+  height: 100%;
+}
 .main-header__item {
   margin: 0 1rem;
   padding: 0;
