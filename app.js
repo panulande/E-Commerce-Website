@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  User.findByPk(1)
+  User.findById(1)
     .then(user => {
       req.user = user;
       next();
@@ -40,7 +40,7 @@ sequelize
   // .sync({ force: true })
   .sync()
   .then(result => {
-    return User.findByPk(1);
+    return User.findById(1);
     // console.log(result);
   })
   .then(user => {
