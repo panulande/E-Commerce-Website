@@ -32,13 +32,8 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoose
-  .connect(
-    'mongodb+srv://maximilian:9u4biljMQc4jjqbe@cluster0-ntrwp.mongodb.net/test?retryWrites=true'
-  )
-  .then(result => {
-    app.listen(3000);
-  })
-  .catch(err => {
-    console.log(err);
-  });
+mongoose.connect('mongodb+srv://panulande2003:ZAaI16Wxb1dPhBfy@cluster0.sxfszm7.mongodb.net/shop?retryWrites=true').then(result => {
+  app.listen(3000);
+}).catch(err=>{
+  console.log(err);
+});
