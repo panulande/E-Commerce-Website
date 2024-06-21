@@ -5,6 +5,7 @@ const MailerSend = require('mailersend').MailerSend
 const Sender = require('mailersend').Sender
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator');
 
 
 const mailerSendConfig = {apiKey: 'mlsn.c59908742ca4fc2711df6f7a713e8dc26da5d8b02c5a7bb7e509aaa526242e21'}
@@ -52,12 +53,17 @@ exports.getSignup = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(422).render
+    ('auth/login', {
+      path: '/login',
+      pageTitle: 'login',
+      errorMessage: errors.array()[0].msg
+    });
+  }
   User.findOne({ email: email })
     .then(user => {
-      if (!user) {
-        req.flash('error', 'Invalid email or password.');
-        return res.redirect('/login');
-      }
       bcrypt
         .compare(password, user.password)
         .then(doMatch => {
@@ -69,7 +75,7 @@ exports.postLogin = (req, res, next) => {
               res.redirect('/');
             });
           }
-          req.flash('error', 'Invalid email or password.');
+          req.flash('error', 'Please enter a valid password.');
           res.redirect('/login');
         })
         .catch(err => {
@@ -84,19 +90,20 @@ exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+    console.log(errors.array());
+    return res.status(422).render
+    ('auth/signup', {
+      path: '/signup',
+      pageTitle: 'Signup',
+      errorMessage: errors.array()[0].msg
+    });
+  }
 
-  User.findOne({ email: email })
-    .then(userDoc => {
-      if (userDoc) {
-        req.flash(
-          'error',
-          'E-Mail exists already, please pick a different one.'
-        );
-        return res.redirect('/signup');
-      }
-
-      return bcrypt.hash(password, 12);
-    })
+  
+    bcrypt
+    .hash(password, 12)
     .then(hashedPassword => {
       const user = new User({
         email: email,
