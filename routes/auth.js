@@ -22,8 +22,8 @@ router.post('/login', [
     }
 )
 
-}),
-body('password', 'Please enter a password with only numbers and text and at lease 5 characters').isLength({min:5}).isAlphanumeric(),
+}).normalizeEmail(),
+body('password', 'Please enter a password with only numbers and text and at lease 5 characters').isLength({min:5}).isAlphanumeric().trim(),
 
 ],authController.postLogin);
 
@@ -35,14 +35,13 @@ router.post('/signup', [check('email').isEmail().withMessage('Please enter a val
         return Promise.reject("User Already Exists");
     }
 })
-    return true;
 
-}),body('password', 'Please enter a password with only numbers and text and at lease 5 characters').isLength({min:5}).isAlphanumeric(), body('confirmPassword').custom((value, {req})=>{
+}).normalizeEmail(),body('password', 'Please enter a password with only numbers and text and at lease 5 characters').isLength({min:5}).isAlphanumeric().trim(), body('confirmPassword').custom((value, {req})=>{
     if(value !== req.body.password){
         throw new Error("Passwords are not the same");
     }
     return true;
-})] ,authController.postSignup);
+}).trim()] ,authController.postSignup);
 
 router.post('/logout', authController.postLogout);
 
