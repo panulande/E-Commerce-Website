@@ -193,8 +193,7 @@ exports.postReset = (req, res, next)=>{
         req.flash('error', 'NO ACCOUNT WITH SUCH USERNAME');
         return res.redirect('/reset');
       }
-      user.resetToken = token;
-      user.resetTokenExpiration = Date.now() + 3600000;
+      
       return user.save();
     }).then(result => {
         res.redirect('/');
