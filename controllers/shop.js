@@ -121,6 +121,27 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
+exports.getCheckout = (req, res, next) =>{
+  req.user
+    .populate('cart.items.productId')
+    .execPopulate()
+    .then(user => {
+
+      const products = user.cart.items;
+      let total = 0;
+      products.forEach(p =>{
+        total = total + p.quantity* p.productId.price;
+      })
+      res.render('shop/checkout', {
+        path: '/checkout',
+        pageTitle: 'checkout',
+        products: products,
+        totalSum: total,
+    })
+    })
+
+}
+
 exports.postOrder = (req, res, next) => {
   req.user
     .populate('cart.items.productId')
